@@ -1,0 +1,47 @@
+\chapter{\'EQUIPE D'AUDIT}
+
+L'identit\'e de l'auteur, du professeur, d'un responsable d'audit ou d'un organisme de certification n'est pas pr\'esente dans le projet. Ces champs ne sont donc pas compl\'et\'es artificiellement. Le tableau~\ref{tab:roles-review} distingue les responsabilit\'es techniques observables des identit\'es non communiqu\'ees.
+
+\begin{table}[H]
+\centering
+\caption{R\^oles associ\'es \`a la production et \`a la validation du rapport}\label{tab:roles-review}
+\begin{tabularx}{\textwidth}{p{4.4cm}p{4cm}X}
+\toprule
+\rowcolor{AuditLight}R\^ole & Identit\'e & Responsabilit\'e\\
+\midrule
+Auteur du projet & Non communiqu\'ee & conception, impl\'ementation et remise acad\'emique\\
+Professeur / \`evaluateur & Non communiqu\'ee & \`evaluation et validation acad\'emiques\\
+Revue automatis\'ee & Agent de documentation & lecture du d\'ep\^ot, ex\'ecution des tests, captures et r\'edaction factuelle\\
+Organisme de certification & Sans objet & aucune mission de certification n'est attest\'ee\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{Acteurs fonctionnels du syst\`eme}
+\addcontentsline{toc}{section}{Acteurs fonctionnels du syst\`eme}
+Les acteurs applicatifs ne doivent pas \^etre confondus avec l'\'equipe de revue. Le code d\'efinit trois groupes :
+\begin{description}
+  \item[Administrateur :] acc\`es \`a toutes les missions, cr\'eation de missions et de comptes, gestion des r\^oles et de l'activation, cl\^oture/r\'eouverture, lecture et export du journal global ;
+  \item[Pentesteur :] consultation des missions affect\'ees, saisie des r\'esultats et suivi des corrections tant que la mission est active ;
+  \item[Auditeur :] lecture et export des missions affect\'ees, acc\`es \`a ses propres \`ev\'enements, sans modification m\'etier.
+\end{description}
+Un superutilisateur Django est trait\'e comme administrateur. Un compte authentifi\'e sans groupe applicatif ne peut pas acc\'eder aux fonctions m\'etier.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[actor/.style={draw,rounded corners,fill=AuditLight,minimum width=3.1cm,minimum height=.85cm},usecase/.style={draw,ellipse,minimum width=4.2cm,minimum height=.8cm,align=center},line/.style={-Latex,thick}]
+\node[actor] (admin) {Administrateur};
+\node[actor,below=1.2cm of admin] (tester) {Pentesteur};
+\node[actor,below=1.2cm of tester] (auditor) {Auditeur};
+\node[usecase,right=3.4cm of admin] (accounts) {G\'erer comptes et r\^oles};
+\node[usecase,below=.8cm of accounts] (missions) {D\'efinir missions et habilitations};
+\node[usecase,below=.8cm of missions] (findings) {Documenter et suivre les constats};
+\node[usecase,below=.8cm of findings] (read) {Consulter et exporter};
+\node[usecase,below=.8cm of read] (logs) {Consulter le journal autoris\'e};
+\draw[line] (admin) -- (accounts); \draw[line] (admin) -- (missions); \draw[line] (admin) -- (findings); \draw[line] (admin) -- (read); \draw[line] (admin) -- (logs);
+\draw[line] (tester) -- (findings); \draw[line] (tester) -- (read);
+\draw[line] (auditor) -- (read); \draw[line] (auditor) -- (logs);
+\end{tikzpicture}
+\caption{Cas d'utilisation synth\'etiques d\'eduits des permissions serveur}
+\label{fig:usecases}
+\end{figure}

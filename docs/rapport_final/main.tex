@@ -1,0 +1,96 @@
+\documentclass[12pt,a4paper,oneside]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{geometry}
+\geometry{top=2.4cm,bottom=2.4cm,left=2.7cm,right=2.4cm}
+\usepackage{graphicx}
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{url}
+
+\definecolor{AuditGreen}{HTML}{0B7A63}
+\definecolor{AuditNavy}{HTML}{10243E}
+\definecolor{AuditLight}{HTML}{EEF5F3}
+\definecolor{AuditGray}{HTML}{5E6B78}
+\hypersetup{colorlinks=true,linkcolor=AuditNavy,urlcolor=AuditGreen,citecolor=AuditGreen,pdftitle={Rapport final AuditHub},pdfauthor={Auteur non communiqu\'e}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlength{\tabcolsep}{4pt}
+\setlength{\emergencystretch}{2em}
+\setlist{nosep,leftmargin=1.6em}
+\captionsetup{font=small,labelfont=bf}
+\renewcommand{\arraystretch}{1.22}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{AuditGray}{AuditHub --- Rapport final}}
+\fancyhead[R]{\textcolor{AuditGray}{Projet Django + React}}
+\fancyfoot[C]{\thepage\ / \pageref{LastPage}}
+\setlength{\headheight}{15pt}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,frame=single,rulecolor=\color{AuditLight},backgroundcolor=\color{AuditLight},showstringspaces=false}
+\newcommand{\evidence}[1]{\nolinkurl{#1}}
+\newcommand{\nonverifie}{\textit{Information non communiqu\'ee ou non v\'erifiable dans le d\'ep\^ot.}}
+
+\begin{document}
+\pagenumbering{gobble}
+\begin{titlepage}
+  \pagecolor{AuditNavy}\color{white}
+  \vspace*{1.2cm}
+  {\Large\bfseries RAPPORT FINAL DE PROJET\par}
+  \vspace{1.2cm}
+  {\Huge\bfseries AuditHub\par}
+  \vspace{0.4cm}
+  {\LARGE Plateforme de gestion documentaire des audits techniques\par}
+  \vfill
+  \begin{tabular}{@{}ll@{}}
+    \textbf{Nature :} & Projet acad\'emique d'ing\'enierie logicielle\\
+    \textbf{Technologies :} & Django 5.2, React 19, SQLite, Playwright\\
+    \textbf{Date du rapport :} & 15 octobre 2026\\
+    \textbf{Version :} & 1.0\\
+    \textbf{Classification :} & CONFIDENTIEL --- remise acad\'emique\\
+    \textbf{Auteur / encadrant :} & Informations non communiqu\'ees\\
+  \end{tabular}
+  \vfill
+  {\large Rapport fond\'e sur l'impl\'ementation effectivement pr\'esente dans le d\'ep\^ot.\par}
+\end{titlepage}
+\nopagecolor\color{black}
+
+\pagenumbering{roman}
+\chapter*{Avertissement sur la nature du document}
+\addcontentsline{toc}{chapter}{Avertissement sur la nature du document}
+Le document de r\'ef\'erence fourni adopte la structure d'un rapport d'audit de SMSI. Le pr\'esent livrable l'applique \`a l'\'evaluation technique du projet logiciel AuditHub. Il ne constitue ni un audit de certification ISO/IEC 27001, ni une recommandation de certification, ni une preuve de conformit\'e d'une organisation. Les informations institutionnelles, identit\'es, signatures et d\'ecisions qui ne figurent pas dans le d\'ep\^ot sont explicitement signal\'ees comme non v\'erifiables.
+
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+
+\include{chapters/01-informations-generales}
+\include{chapters/02-objectifs}
+\include{chapters/03-perimetre}
+\include{chapters/04-criteres}
+\include{chapters/05-equipe}
+\include{chapters/06-methodologie}
+\include{chapters/07-deroulement}
+\include{chapters/08-synthese}
+\include{chapters/09-non-conformites}
+\include{chapters/10-observations}
+\include{chapters/11-conclusion}
+\include{chapters/12-annexes}
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

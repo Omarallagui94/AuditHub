@@ -1,0 +1,39 @@
+\chapter{OBJECTIFS DE L'AUDIT}
+
+L'objectif de cette revue est d'\'evaluer si la version finale d'AuditHub correspond \`a son positionnement document\'e et si ses principaux m\'ecanismes sont coh\'erents avec le code, les migrations et les tests. Elle ne cherche pas \`a conclure sur l'efficacit\'e globale d'un SMSI r\'eel.
+
+\section*{Objectifs fonctionnels}
+\addcontentsline{toc}{section}{Objectifs fonctionnels}
+\begin{itemize}
+  \item v\'erifier la gestion de missions avec r\'ef\'erence d'autorisation, dates, p\'erim\`etre IP/CIDR et membres ;
+  \item v\'erifier la saisie de constats issus de quatre familles d'outils, avec m\'ethode, preuve, s\'ev\'erit\'e et correction ;
+  \item examiner le suivi dat\'e et l'historique des re-tests ;
+  \item contr\^oler les exports de mission et du journal ;
+  \item d\'ecrire les parcours React r\'eellement disponibles.
+\end{itemize}
+
+\section*{Objectifs de s\'ecurit\'e et de qualit\'e}
+\addcontentsline{toc}{section}{Objectifs de s\'ecurit\'e et de qualit\'e}
+La revue couvre l'authentification par session, les permissions fond\'ees sur trois r\^oles, le cloisonnement par mission, CSRF, l'\'echappement des preuves affich\'ees par React, les en-t\^etes HTTP, la limitation des tentatives de connexion, les contraintes de base et la gestion des secrets de configuration. Elle v\'erifie aussi la reproductibilit\'e du build et l'existence d'une cha\^ine d'int\'egration continue.
+
+\section*{Crit\`eres de r\'eussite retenus}
+\addcontentsline{toc}{section}{Crit\`eres de r\'eussite retenus}
+Une exigence est consid\'er\'ee comme mise en \oe uvre seulement lorsqu'elle est observable dans le code, la migration, l'interface ou un test. La simple pr\'esence d'un texte dans la documentation ne suffit pas. Inversement, les fonctions explicitement hors p\'erim\`etre --- ex\'ecution de scanners, import de fichiers, MFA, SSO ou certification --- ne sont pas pr\'esent\'ees comme livr\'ees.
+
+\begin{table}[H]
+\centering
+\caption{Synth\`ese des exigences fonctionnelles v\'erifiables}
+\begin{tabularx}{\textwidth}{p{4.6cm}X p{2.4cm}}
+\toprule
+\rowcolor{AuditLight}Exigence & Preuve d'impl\'ementation & \`Etat\\
+\midrule
+Authentification et session & Django Auth, endpoint \evidence{/api/session/}, cookie HttpOnly & Impl\'ement\'e\\
+RBAC et habilitations & d\'ecorateur \evidence{allowed}, groupes et filtre \evidence{visible\_missions} & Impl\'ement\'e\\
+Mission autoris\'ee & mod\`ele \evidence{Mission}, formulaire et contrainte de dates & Impl\'ement\'e\\
+Constat technique & \evidence{TestRecord}, validation IP/date, SHA-256 & Impl\'ement\'e\\
+Historique de suivi & \evidence{FollowupEvent}, API et export v2 & Impl\'ement\'e\\
+Ex\'ecution des outils & aucune commande ni connecteur dans l'application & Hors p\'erim\`etre\\
+Import de rapports/fichiers & aucun t\'el\'eversement ni parseur & Non impl\'ement\'e\\
+\bottomrule
+\end{tabularx}
+\end{table}

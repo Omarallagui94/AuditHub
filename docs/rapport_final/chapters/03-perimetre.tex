@@ -1,0 +1,32 @@
+\chapter{P\'ERIM\`ETRE DE L'AUDIT}
+
+\section*{3.2 P\'erim\`etre de l'audit (sites et processus audit\'es)}
+\addcontentsline{toc}{section}{3.2 P\'erim\`etre de l'audit (sites et processus audit\'es)}
+Le terme \og site \fg{} est interpr\'et\'e ici comme un composant du d\'ep\^ot, aucun site physique n'ayant \`et\'e visit\'e. L'analyse couvre les sources et artefacts suivants.
+
+\begin{longtable}{p{3.8cm}p{4cm}p{7cm}}
+\caption{P\'erim\`etre technique examin\'e}\label{tab:scope}\\
+\toprule
+\rowcolor{AuditLight}Zone & Emplacement & Contenu examin\'e\\
+\midrule\endfirsthead
+\toprule
+Zone & Emplacement & Contenu examin\'e\\\midrule\endhead
+Configuration Django & \evidence{config/} & param\`etres, middleware, URL, WSGI, s\'ecurit\'e de production\\
+M\'etier backend & \evidence{portal/} & mod\`eles, formulaires, vues, pr\'esentation JSON, permissions, commandes, migrations\\
+Frontend & \evidence{frontend/src/} & navigation SPA, composants, formulaires dynamiques, client API, styles\\
+Bundle servi & \evidence{static/react/} & JavaScript et CSS compil\'es, servis par Django\\
+Tests & \evidence{portal/tests.py}, \evidence{frontend/tests/} & 33 tests backend, 3 parcours de navigateur\\
+Documentation & \evidence{README.md}, \evidence{docs/} & installation, architecture, guide auditeur, matrice ISO\\
+D\'ependance et CI & fichiers de verrouillage, \evidence{.github/} & versions, build et workflow automatis\'e\\
+\bottomrule
+\end{longtable}
+
+Les processus couverts sont l'ouverture de session, l'administration des comptes, la cr\'eation d'une mission, l'affectation des membres, la saisie d'un test, la validation du p\'erim\`etre, le suivi des corrections, la cl\^oture/r\'eouverture, la consultation du journal et l'export.
+
+\section*{Limites du p\'erim\`etre}
+\addcontentsline{toc}{section}{Limites du p\'erim\`etre}
+La revue n'inclut pas de scan d'une cible, de test intrusif, d'inspection d'une infrastructure TLS r\'eelle, d'analyse dynamique en production, ni d'\'evaluation humaine d'une organisation. SQLite est examin\'e comme choix du prototype ; aucune preuve de charge multi-utilisateur ou de haute disponibilit\'e n'est disponible. Les captures utilisent exclusivement une base temporaire et des donn\'ees synth\'etiques.
+
+\section*{Interfaces et d\'ependances techniques}
+\addcontentsline{toc}{section}{Interfaces et d\'ependances techniques}
+Le navigateur communique avec Django sur la m\^eme origine par des requ\^etes JSON sous \evidence{/api/}. La session reste dans un cookie HttpOnly ; le jeton CSRF fourni par \evidence{/api/session/} est envoy\'e dans l'en-t\^ete \evidence{X-CSRFToken}. Le backend utilise l'ORM avec SQLite. En production document\'ee, Waitress re\c{c}oit les requ\^etes d'un reverse proxy TLS de confiance. Node.js n'est n\'ecessaire qu'au build du frontend.

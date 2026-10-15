@@ -1,0 +1,31 @@
+\chapter{CRIT\`ERES D'AUDIT}
+
+Les crit\`eres retenus sont les exigences explicitement document\'ees par le projet, les comportements impos\'es par les formulaires et permissions, ainsi que les contr\^oles automatis\'es. Les normes ISO sont utilis\'ees uniquement comme cadre de contribution, jamais comme base d'une d\'eclaration de conformit\'e.
+
+\section*{4.1 Norme de r\'ef\'erence}
+\addcontentsline{toc}{section}{4.1 Norme de r\'ef\'erence}
+Le projet cible trois mesures mentionn\'ees dans sa documentation : A.8.8 (gestion des vuln\'erabilit\'es techniques), A.8.25 (cycle de d\'eveloppement s\'ecuris\'e) et A.8.29 (tests de s\'ecurit\'e en d\'eveloppement et acceptation). Les pages publiques de l'ISO confirment le r\^ole g\'en\'eral d'ISO/IEC 27001 et d'ISO/IEC 27002 \cite{iso27001,iso27002}. Les textes normatifs complets ne sont pas reproduits et n'ont pas \`et\'e fournis dans le d\'ep\^ot.
+
+\section*{4.2 Documents de r\'ef\'erence compl\'ementaires}
+\addcontentsline{toc}{section}{4.2 Documents de r\'ef\'erence compl\'ementaires}
+La revue s'appuie sur la documentation officielle Django relative \`a la s\'ecurit\'e, aux sessions, CSRF et au d\'eploiement \cite{django-security,django-deployment}, ainsi que sur la documentation React pour le rendu et l'\'echappement des valeurs \cite{react-docs}. Les fichiers propres au projet sont prioritaires pour d\'ecrire le comportement effectivement livr\'e.
+
+\section*{4.3 Exigences internes du client}
+\addcontentsline{toc}{section}{4.3 Exigences internes du client}
+Aucun client institutionnel ni corpus de politiques internes n'est identifiable. Les exigences internes utilisables sont donc celles du \evidence{README.md}, de \evidence{docs/ARCHITECTURE.md}, de \evidence{docs/GUIDE\_AUDITEUR.md} et des tests. Cette limitation emp\^eche toute conclusion sur des obligations contractuelles ou r\'eglementaires propres \`a une organisation.
+
+\begin{table}[H]
+\centering
+\caption{Sources de preuve et niveau de confiance}
+\begin{tabularx}{\textwidth}{p{4cm}X p{3cm}}
+\toprule
+\rowcolor{AuditLight}Source & Usage & Niveau\\
+\midrule
+Code et migrations & comportement et structure de donn\'ees & \`Elev\'e\\
+Tests ex\'ecut\'es & r\'egressions couvertes et r\'esultats dat\'es & \`Elev\'e dans le p\'erim\`etre test\'e\\
+Documentation du d\'ep\^ot & intention, exploitation, limites d\'eclar\'ees & Moyen \`a \`elev\'e\\
+Captures automatis\'ees & preuve visuelle des parcours synth\'etiques & \`Elev\'e pour l'interface\\
+Environnement de production & non fourni & Non v\'erifiable\\
+\bottomrule
+\end{tabularx}
+\end{table}

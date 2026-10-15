@@ -1,0 +1,107 @@
+\chapter{M\'ETHODOLOGIE D'AUDIT}
+
+\section*{6.1 Approche g\'en\'erale}
+\addcontentsline{toc}{section}{6.1 Approche g\'en\'erale}
+La m\'ethode combine analyse statique, confrontation documentation--impl\'ementation, ex\'ecution automatis\'ee et inspection visuelle. Les affirmations sont class\'ees en quatre cat\'egories : impl\'ement\'e, partiellement couvert, explicitement hors p\'erim\`etre ou non v\'erifiable. Aucune propri\'et\'e de s\'ecurit\'e n'est inf\'er\'ee d'une simple intention documentaire.
+
+\section*{6.2 Techniques de collecte de preuves}
+\addcontentsline{toc}{section}{6.2 Techniques de collecte de preuves}
+\begin{longtable}{p{3.5cm}p{6cm}p{5.3cm}}
+\caption{Techniques appliqu\'ees au projet}\\
+\toprule
+\rowcolor{AuditLight}Technique & Mise en \oe uvre & Preuves produites\\
+\midrule\endfirsthead
+\toprule Technique & Mise en \oe uvre & Preuves produites\\\midrule\endhead
+Inventaire & parcours des fichiers hors d\'ependances g\'en\'er\'ees & cartographie du d\'ep\^ot\\
+Revue du backend & lecture mod\`eles, formulaires, vues, permissions, URL & exigences et flux m\'etier\\
+Revue du frontend & lecture client API, navigation, composants, CSS & pages et comportement SPA\\
+Analyse des donn\'ees & inspection des migrations et contraintes & mod\`ele relationnel\\
+Tests backend & \evidence{manage.py test} & 33 tests r\'eussis\\
+Tests navigateur & Playwright/Chrome headless, base temporaire & 3 parcours r\'eussis\\
+Capture applicative & sc\'enario Playwright d\'edi\'e, donn\'ees synth\'etiques & 9 captures haute r\'esolution\\
+Contr\^oles de livraison & build React, checks Django, coh\'erence migrations & bundle et configuration valides\\
+\bottomrule
+\end{longtable}
+
+\section*{Architecture technique}
+\addcontentsline{toc}{section}{Architecture technique}
+L'architecture est volontairement monolithique et de m\^eme origine. Django sert la coque HTML, les fichiers statiques React et l'API. React pilote la navigation client et transforme les sch\'emas de formulaire JSON en champs. Les r\`egles m\'etier demeurent c\^ot\'e serveur. L'ORM persiste dans SQLite. Cette architecture r\'eduit les besoins CORS et \`evite le stockage d'un jeton d'acc\`es dans le navigateur.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[box/.style={draw,rounded corners,fill=AuditLight,minimum width=3.3cm,minimum height=1.15cm,align=center},arr/.style={-Latex,thick,AuditGreen}]
+\node[box] (browser) {Navigateur\\React 19};
+\node[box,right=1.5cm of browser] (django) {Django 5.2\\API JSON + Auth + RBAC};
+\node[box,right=1.5cm of django] (db) {SQLite\\ORM + migrations};
+\node[box,below=1.4cm of django] (static) {Bundle esbuild\\JS/CSS statiques};
+\node[box,above=1.4cm of django] (proxy) {Reverse proxy TLS\\production document\'ee};
+\draw[arr,<->] (browser) -- node[above]{HTTPS / JSON} (django);
+\draw[arr,<->] (django) -- node[above]{requ\^etes ORM} (db);
+\draw[arr] (static) -- (django);
+\draw[arr] (proxy) -- (django);
+\end{tikzpicture}
+\caption{Architecture logique effectivement impl\'ement\'ee et cible de d\'eploiement}
+\label{fig:architecture}
+\end{figure}
+
+\section*{Architecture fonctionnelle et navigation}
+\addcontentsline{toc}{section}{Architecture fonctionnelle et navigation}
+Le frontend ne recourt pas \`a un routeur externe. Il synchronise \evidence{window.history}, recharge la session et appelle le chemin API correspondant. Les pages disponibles sont la connexion, le tableau de bord, les missions, la biblioth\`eque d'outils, le journal, la matrice ISO et, pour l'administrateur, les utilisateurs. Les mutations utilisent \evidence{FormData}; les erreurs de validation reviennent sous forme d'un sch\'ema JSON et sont rendues au niveau des champs.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=.75cm and 1.4cm,flowstep/.style={draw,rounded corners,minimum width=3.5cm,minimum height=.8cm,align=center},arr/.style={-Latex,thick}]
+\node[flowstep] (login) {Connexion};
+\node[flowstep,right=of login] (session) {Session + CSRF};
+\node[flowstep,right=of session] (mission) {Mission autoris\'ee};
+\node[flowstep,below=of mission] (test) {Saisie du r\'esultat};
+\node[flowstep,left=of test] (follow) {Suivi / re-test};
+\node[flowstep,left=of follow] (export) {Export JSON};
+\draw[arr] (login)--(session); \draw[arr] (session)--(mission); \draw[arr] (mission)--(test); \draw[arr] (test)--(follow); \draw[arr] (follow)--(export);
+\end{tikzpicture}
+\caption{Flux principal d'une mission document\'ee}
+\label{fig:workflow}
+\end{figure}
+
+\section*{Mod\`ele de donn\'ees}
+\addcontentsline{toc}{section}{Mod\`ele de donn\'ees}
+Le mod\`ele s'appuie sur l'utilisateur et les groupes Django. Une mission est cr\'e\'ee par un utilisateur et r\'ef\'erence plusieurs membres. Chaque r\'esultat appartient \`a une mission et conserve son auteur. Chaque mise \`a jour de suivi cr\'ee un \evidence{FollowupEvent} prot\'eg\'e contre la suppression en cascade. \evidence{AuditEvent} est un journal applicatif autonome ; \evidence{LoginAttempt} porte les fen\^etres de limitation.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[entity/.style={draw,rectangle,rounded corners,fill=AuditLight,minimum width=3.1cm,minimum height=1cm,align=center},rel/.style={-Latex,thick}]
+\node[entity] (user) {User / Group};
+\node[entity,right=2cm of user] (mission) {Mission};
+\node[entity,right=2cm of mission] (record) {TestRecord};
+\node[entity,below=1.5cm of record] (follow) {FollowupEvent};
+\node[entity,below=1.5cm of mission] (audit) {AuditEvent};
+\node[entity,below=1.5cm of user] (login) {LoginAttempt};
+\draw[rel] (user)--node[above]{cr\'ee / membres N--N}(mission);
+\draw[rel] (mission)--node[above]{1--N}(record);
+\draw[rel] (record)--node[right]{1--N}(follow);
+\draw[rel] (user)--(follow);
+\draw[dashed] (user)--(audit);
+\end{tikzpicture}
+\caption{Relations principales du sch\'ema de donn\'ees}
+\label{fig:erd}
+\end{figure}
+
+\section*{S\'equence d'une mutation authentifi\'ee}
+\addcontentsline{toc}{section}{S\'equence d'une mutation authentifi\'ee}
+\begin{figure}[H]
+\centering
+\resizebox{.98\textwidth}{!}{%
+\begin{tikzpicture}[life/.style={draw,minimum width=2.5cm,minimum height=.7cm,fill=AuditLight},msg/.style={-Latex,thick}]
+\node[life] (b) {Navigateur}; \node[life,right=2cm of b] (r) {React}; \node[life,right=2cm of r] (d) {Django}; \node[life,right=2cm of d] (s) {SQLite};
+\foreach \x in {b,r,d,s} \draw[dashed] (\x.south)--++(0,-5.2);
+\draw[msg] ($(b.south)+(0,-.6)$)--node[above]{soumission}($(r.south)+(0,-.6)$);
+\draw[msg] ($(r.south)+(0,-1.5)$)--node[above]{POST + cookie + CSRF}($(d.south)+(0,-1.5)$);
+\draw[msg] ($(d.south)+(0,-2.4)$)--node[above]{RBAC + validation}($(s.south)+(0,-2.4)$);
+\draw[msg] ($(s.south)+(0,-3.3)$)--node[above]{transaction valid\'ee}($(d.south)+(0,-3.3)$);
+\draw[msg] ($(d.south)+(0,-4.2)$)--node[above]{JSON redirect / erreurs}($(r.south)+(0,-4.2)$);
+\draw[msg] ($(r.south)+(0,-5.1)$)--node[above]{mise \`a jour de l'interface}($(b.south)+(0,-5.1)$);
+\end{tikzpicture}
+}
+\caption{S\'equence simplifi\'ee d'une \`ecriture m\'etier}
+\label{fig:sequence}
+\end{figure}

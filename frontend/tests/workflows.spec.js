@@ -1,0 +1,105 @@
+import {test, expect} from '@playwright/test';
+
+async function login(page, username = 'admin-test') {
+  await page.goto('/connexion/');
+  await page.getByLabel('Identifiant', {exact: true}).fill(username);
+  await page.getByLabel('Mot de passe', {exact: true}).fill('Browser-Tests-Only!294');
+  await page.getByRole('button', {name:'Se connecter'}).click();
+  await expect(page.getByRole('heading', {name:'Vue d’ensemble', exact:true})).toBeVisible();
+}
+
+test('complete React mission, finding, correction, export and journal workflow', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await login(page);
+  await page.screenshot({path:'../.runtime/react-dashboard.png', fullPage:true});
+  await page.getByRole('link', {name:'+ Nouvelle mission'}).click();
+  await page.getByLabel('Nom de la mission').fill('Mission React navigateur');
+  await page.getByLabel('Référence').fill('AUT-REACT');
+  await page.getByLabel('Périmètre').fill('192.0.2.0/24');
+  await page.getByLabel('Début').fill('2020-01-01');
+  await page.getByLabel('Fin', {exact:false}).fill('2099-12-31');
+  await page.getByLabel('Utilisateurs habilités').selectOption([{label:'tester-test'}, {label:'auditor-test'}]);
+  await page.getByRole('button', {name:'Enregistrer', exact:true}).click();
+  await expect(page.getByRole('heading', {name:'Mission React navigateur', exact:true})).toBeVisible();
+  const missionUrl = page.url();
+  await page.getByRole('link', {name:'Documenter un test'}).click();
+  await page.getByLabel('Outil', {exact:false}).selectOption('nmap');
+  await page.getByLabel('Version utilisée').fill('7.95');
+  await page.getByLabel('IP de la cible').fill('198.51.100.1');
+  await page.getByLabel('Titre du constat').fill('Constat React');
+  await page.getByLabel('Date du test').fill('2025-01-01T10:00');
+  await page.getByLabel('Méthode et paramètres').fill('Vérification contrôlée');
+  await page.getByLabel('Preuve textuelle').fill('<script>window.xssTriggered=true</script>');
+  await page.getByLabel('Sévérité').selectOption('high');
+  await page.getByLabel('Mesure corrective').fill('Corriger puis vérifier.');
+  await page.getByLabel('Responsable').fill('Équipe sécurité');
+  await page.getByLabel('Échéance').fill('2099-01-01');
+  await page.getByRole('button', {name:'Enregistrer', exact:true}).click();
+  await expect(page.getByText('Cette cible est hors du périmètre autorisé.', {exact:true})).toBeVisible();
+  await page.getByLabel('IP de la cible').fill('192.0.2.20');
+  await page.getByRole('button', {name:'Enregistrer', exact:true}).click();
+  await expect(page.getByRole('heading', {name:'Constat React', exact:true})).toBeVisible();
+  await page.getByText('Méthode et preuve', {exact:true}).click();
+  await expect(page.getByText('<script>window.xssTriggered=true</script>', {exact:true})).toBeVisible();
+  expect(await page.evaluate(() => window.xssTriggered)).toBeUndefined();
+  await page.getByRole('link', {name:'Mettre à jour le suivi'}).click();
+  await page.getByLabel('État').selectOption('resolved');
+  await page.getByRole('button', {name:'Enregistrer', exact:true}).click();
+  await expect(page.getByText('Une preuve de re-test est nécessaire pour résoudre un constat.', {exact:true})).toBeVisible();
+  await page.getByLabel('Preuve de re-test').fill('Re-test réalisé, correction confirmée.');
+  await page.getByRole('button', {name:'Enregistrer', exact:true}).click();
+  await expect(page.getByText('Résolu', {exact:true})).toBeVisible();
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', {name:'Exporter le rapport JSON'}).click();
+  expect((await download).suggestedFilename()).toMatch(/^mission-\d+\.json$/);
+  await page.reload();
+  await expect(page.getByRole('heading', {name:'Mission React navigateur', exact:true})).toBeVisible();
+  await page.getByRole('button', {name:'Clôturer la mission'}).click();
+  await expect(page.getByRole('button', {name:'Réouvrir la mission'})).toBeVisible();
+  await expect(page.getByRole('link', {name:'Documenter un test'})).toHaveCount(0);
+  await page.getByRole('link', {name:'Journal d’activité'}).click();
+  await page.getByLabel('Filtrer par action').fill('finding.updated');
+  await page.getByRole('button', {name:'Rechercher'}).click();
+  await expect(page.locator('code').filter({hasText:'finding.updated'})).toBeVisible();
+  await page.getByRole('button', {name:'Déconnexion'}).click();
+  await expect(page.getByRole('button', {name:'Se connecter'})).toBeVisible();
+  expect(errors).toEqual([]);
+  await login(page, 'auditor-test');
+  await page.goto(missionUrl);
+  await expect(page.getByRole('heading', {name:'Constat React', exact:true})).toBeVisible();
+  await expect(page.getByRole('button', {name:'Réouvrir la mission'})).toHaveCount(0);
+  await expect(page.getByRole('link', {name:'Mettre à jour le suivi'})).toHaveCount(0);
+});
+
+test('React users, tools, controls, history, validation and mobile layout', async ({page}) => {
+  await login(page);
+  await page.getByRole('link', {name:'Utilisateurs', exact:true}).click();
+  await page.getByLabel('Identifiant', {exact:false}).fill('react-user');
+  await page.getByLabel('Mot de passe initial').fill('short');
+  await page.getByLabel('Rôle', {exact:false}).selectOption('Auditeur');
+  await page.getByRole('button', {name:'Créer le compte'}).click();
+  await expect(page.getByRole('alert').first()).toBeVisible();
+  await page.getByLabel('Mot de passe initial').fill('Good-React-Password!294');
+  await page.getByRole('button', {name:'Créer le compte'}).click();
+  await expect(page.locator('.list-row strong').filter({hasText:'react-user'})).toBeVisible();
+  await page.getByRole('link', {name:'Bibliothèque d’outils'}).click();
+  await expect(page.locator('.tool-card')).toHaveCount(4);
+  await page.getByRole('link', {name:'Contrôles ISO'}).click();
+  await expect(page.getByRole('heading', {name:'Matrice de preuves ISO'})).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole('heading', {name:'Bibliothèque d’outils'})).toBeVisible();
+  await page.setViewportSize({width:390,height:844});
+  await expect(page.getByRole('heading', {name:'Bibliothèque d’outils'})).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({path:'../.runtime/react-mobile.png', fullPage:true});
+});
+
+test('expired sessions and direct access to restricted React pages', async ({page, context}) => {
+  await login(page, 'tester-test');
+  await page.goto('/utilisateurs/');
+  await expect(page.getByRole('alert')).toContainText('Accès refusé');
+  await context.clearCookies();
+  await page.goto('/missions/');
+  await expect(page.getByRole('button', {name:'Se connecter'})).toBeVisible();
+});

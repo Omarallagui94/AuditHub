@@ -1,0 +1,25 @@
+\chapter{OBSERVATIONS ET OPPORTUNIT\'ES D'AM\'ELIORATION}
+
+\section*{Observation O-01 --- coh\'erence documentaire}
+\addcontentsline{toc}{section}{O-01 --- coh\'erence documentaire}
+La documentation expose clairement le mode documentaire et ses limites. Elle doit rester synchronis\'ee avec les nombres de tests, la version du sch\'ema d'export et les variables de proxy. La CI pourrait produire automatiquement un r\'esum\'e de validation afin de r\'eduire les informations dat\'ees.
+
+\section*{Observation O-02 --- accessibilit\'e et navigateurs}
+\addcontentsline{toc}{section}{O-02 --- accessibilit\'e et navigateurs}
+Les formulaires utilisent labels, messages ARIA et \`etats de chargement. Le navigateur automatis\'e couvre Chrome et un affichage mobile, mais aucun audit WCAG outill\'e ni test Firefox/WebKit n'est pr\'esent. Une campagne axe-core et des tests clavier constitueraient une am\'elioration mesurable.
+
+\section*{Observation O-03 --- score de risque}
+\addcontentsline{toc}{section}{O-03 --- score de risque}
+La s\'ev\'erit\'e est d\'eclarative. L'ajout d'un vecteur CVSS valid\'e, distinct de la priorit\'e m\'etier, permettrait de documenter le calcul sans remplacer le jugement de l'auditeur. Ce besoin n'est pas impl\'ement\'e dans la version analys\'ee.
+
+\section*{Observation O-04 --- int\'egration d'outils}
+\addcontentsline{toc}{section}{O-04 --- int\'egration d'outils}
+Une extension d'ex\'ecution ne devrait pas \^etre ajout\'ee au serveur web. La documentation propose \`a juste titre un worker isol\'e, une file de t\^aches, des profils autoris\'es, des quotas, un arr\^et d'urgence et une validation du p\'erim\`etre juste avant l'ex\'ecution. Cette orientation est une opportunit\'e future et non une capacit\'e actuelle.
+
+\section*{Bonne pratique BP-01 --- d\'efense en profondeur}
+\addcontentsline{toc}{section}{BP-01 --- d\'efense en profondeur}
+Les contr\^oles d'interface ne sont jamais la seule barri\`ere : permissions, filtrage des querysets, validation des formulaires, contraintes SQL, transactions et journalisation se compl\`etent. Cette combinaison facilite la maintenance et limite l'impact d'un contournement du frontend.
+
+\section*{Bonne pratique BP-02 --- preuves reproductibles}
+\addcontentsline{toc}{section}{BP-02 --- preuves reproductibles}
+Les captures de ce rapport sont reproductibles par le sc\'enario Playwright fourni. Celui-ci lance une base temporaire, cr\'ee trois comptes synth\'etiques, remplit une mission et s'arr\^ete sans toucher \`a \evidence{audit.sqlite3}. Cette approche garantit que les figures correspondent \`a l'application et non \`a des maquettes.

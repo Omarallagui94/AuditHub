@@ -1,0 +1,33 @@
+\chapter{CONCLUSION ET RECOMMANDATION DE CERTIFICATION}
+
+\section*{11.1 Synth\`ese g\'en\'erale}
+\addcontentsline{toc}{section}{11.1 Synth\`ese g\'en\'erale}
+AuditHub atteint son objectif de \textbf{prototype fonctionnel de gestion documentaire d'audits techniques}. La cha\^ine mission--autorisation--p\'erim\`etre--constat--preuve--correction--re-test est coh\'erente, contr\^ol\'ee par r\^oles et couverte par des tests. L'architecture Django/React de m\^eme origine est simple \`a d\'eployer, et l'interface fournit des parcours utilisables sans serveur frontend distinct.
+
+Les 33 tests Django et les 3 parcours navigateur r\'eussissent dans l'environnement de validation. Le build React aboutit, les migrations sont coh\'erentes et le check Django ne signale pas de probl\`eme avec une configuration de production valide. Ces r\'esultats prouvent les sc\'enarios couverts, pas l'absence g\'en\'erale de vuln\'erabilit\'es.
+
+Le projet pr\'esente plusieurs qualit\'es d'ing\'enierie : validations c\^ot\'e serveur, RBAC, transactions, contraintes SQL, historique de suivi, configuration par environnement, d\'ependances verrouill\'ees, CI et documentation de d\'eploiement. Ses limites sont explicites : SQLite, absence de journal WORM, MFA/SSO, stockage de fichiers, surveillance et tests ind\'ependants.
+
+\section*{Position relative \`a la certification}
+\addcontentsline{toc}{section}{Position relative \`a la certification}
+\textbf{Aucune recommandation de certification ISO/IEC 27001 n'est \`emise.} AuditHub fournit des \`el\'ements qui peuvent contribuer \`a A.8.8, A.8.25 et A.8.29, mais l'\'evaluation d'un SMSI suppose les articles 4 \`a 10, la D\'eclaration d'Applicabilit\'e, les risques, les politiques, les personnes, les processus et des preuves organisationnelles absentes de ce projet.
+
+Dans un cadre acad\'emique, la version peut \^etre consid\'er\'ee comme \textbf{livrable logiciel valid\'e dans son p\'erim\`etre documentaire}, sous r\'eserve que l'\'evaluateur compl\`ete les informations institutionnelles et appr\'ecie les choix au regard du sujet initial non fourni dans le d\'ep\^ot.
+
+\section*{11.4 Prochaines \`etapes}
+\addcontentsline{toc}{section}{11.4 Prochaines \`etapes}
+\begin{longtable}{p{5.4cm}p{4cm}p{5.3cm}}
+\caption{Feuille de route recommand\'ee}\\
+\toprule
+\rowcolor{AuditLight}\`Etape & Responsable attendu & Condition de cl\^oture\\
+\midrule\endfirsthead
+\toprule \`Etape & Responsable & Condition\\\midrule\endhead
+Compl\'eter auteur, encadrant et contexte acad\'emique & porteur du projet & informations confirm\'ees\\
+Qualifier la charge et choisir la base & architecte / exploitation & essai de concurrence et sauvegarde\\
+D\'eployer TLS, service et supervision & exploitation & recette de production document\'ee\\
+Externaliser et prot\'eger les journaux & s\'ecurit\'e / exploitation & r\'etention et restauration test\'ees\\
+Ajouter SAST/SCA/SBOM & \`equipe de d\'eveloppement & pipeline bloquant et rapports archiv\'es\\
+Choisir MFA/SSO & responsable s\'ecurit\'e & authentification forte test\'ee\\
+R\'ealiser une revue ind\'ependante & auditeur autoris\'e & rapport et actions suivies\\
+\bottomrule
+\end{longtable}

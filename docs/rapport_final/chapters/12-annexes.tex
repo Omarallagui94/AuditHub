@@ -1,0 +1,113 @@
+\chapter{ANNEXES}
+
+\section*{Annexe A : Liste des documents examin\'es}
+\addcontentsline{toc}{section}{Annexe A : Liste des documents examin\'es}
+\begin{longtable}{r p{6cm} p{7cm}}
+\toprule
+\rowcolor{AuditLight}N\textsuperscript{o} & Document & Usage\\
+\midrule\endfirsthead
+\toprule N\textsuperscript{o} & Document & Usage\\\midrule\endhead
+1 & \evidence{README.md} & fonctions, installation, validation et limites\\
+2 & \evidence{docs/ARCHITECTURE.md} & architecture, menaces et d\'eploiement\\
+3 & \evidence{docs/GUIDE\_AUDITEUR.md} & r\^oles et processus op\'erationnels\\
+4 & \evidence{docs/RAPPORT\_TESTS\_ISO.md} & r\'esultats de validation et matrice ISO\\
+5 & \evidence{Structure rapport.docx} & structure obligatoire et consignes de couleur\\
+6 & \evidence{requirements*.txt}, \evidence{package*.json} & d\'ependances et versions\\
+7 & \evidence{.github/workflows/ci.yml} & automatisation de validation\\
+\bottomrule
+\end{longtable}
+
+\section*{Annexe B : Inventaire du code examin\'e}
+\addcontentsline{toc}{section}{Annexe B : Inventaire du code examin\'e}
+\begin{longtable}{p{5cm}p{9.5cm}}
+\toprule
+\rowcolor{AuditLight}Fichier / zone & Responsabilit\'e\\
+\midrule\endfirsthead
+\toprule Fichier / zone & Responsabilit\'e\\\midrule\endhead
+\evidence{portal/models.py} & entit\'es, relations et contraintes\\
+\evidence{portal/forms.py} & validation m\'etier et comptes\\
+\evidence{portal/views.py} & cas d'usage, transactions, exports\\
+\evidence{portal/security.py} & r\^oles, journal, IP client et en-t\^etes\\
+\evidence{portal/api.py} & s\'erialisation JSON et erreurs\\
+\evidence{config/settings.py} & sessions, HTTPS, cookies, base, limites\\
+\evidence{config/urls.py} & surface HTTP et coque React\\
+\evidence{frontend/src/main.jsx} & navigation et pages\\
+\evidence{frontend/src/components.jsx} & composants, formulaires et constats\\
+\evidence{frontend/src/api.js} & transport et erreurs\\
+\evidence{portal/tests.py} & tests fonctionnels et de s\'ecurit\'e\\
+\evidence{frontend/tests/workflows.spec.js} & tests bout en bout\\
+\bottomrule
+\end{longtable}
+
+\section*{Annexe C : Matrice des permissions}
+\addcontentsline{toc}{section}{Annexe C : Matrice des permissions}
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\textwidth}{X c c c}
+\toprule
+\rowcolor{AuditLight}Action & Admin. & Pentesteur & Auditeur\\
+\midrule
+Consulter les outils & Oui & Oui & Oui\\
+Cr\'eer une mission & Oui & Non & Non\\
+Consulter/exporter une mission & Toutes & Affect\'ees & Affect\'ees\\
+Documenter un test & Oui & Affect\'ees & Non\\
+Suivre une correction & Oui & Affect\'ees & Non\\
+Cl\^oturer/r\'eouvrir & Oui & Non & Non\\
+Cr\'eer/g\'erer un compte & Oui & Non & Non\\
+Journal global/export & Oui & Non & Non\\
+Journal personnel & Oui & Non & Oui\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{Annexe D : Endpoints principaux}
+\addcontentsline{toc}{section}{Annexe D : Endpoints principaux}
+\begin{longtable}{p{5.3cm}p{2.2cm}p{6.7cm}}
+\toprule
+\rowcolor{AuditLight}Chemin API & M\'ethodes & Objet\\
+\midrule\endfirsthead
+\toprule Chemin & M\'ethodes & Objet\\\midrule\endhead
+\evidence{/api/session/} & GET & profil, r\^ole et jeton CSRF\\
+\evidence{/api/connexion/} & GET, POST & authentification et limitation\\
+\evidence{/api/missions/} & GET & missions autoris\'ees, recherche et pagination\\
+\evidence{/api/missions/nouvelle/} & GET, POST & cr\'eation administrateur\\
+\evidence{/api/missions/<id>/} & GET & d\'etail et constats\\
+\evidence{/api/missions/<id>/test/} & GET, POST & saisie de r\'esultat\\
+\evidence{/api/tests/<id>/suivi/} & GET, POST & suivi et historique\\
+\evidence{/api/missions/<id>/rapport/} & GET & export JSON v2\\
+\evidence{/api/journal/} & GET & consultation autoris\'ee\\
+\evidence{/api/journal/export/} & GET & export global administrateur\\
+\evidence{/api/utilisateurs/} & GET, POST & comptes\\
+\evidence{/api/utilisateurs/<id>/acces/} & GET, POST & r\^ole et activation\\
+\bottomrule
+\end{longtable}
+
+\section*{Annexe E : Preuves documentaires collect\'ees}
+\addcontentsline{toc}{section}{Annexe E : Preuves documentaires collect\'ees}
+\begin{enumerate}
+  \item sortie de 33 tests Django r\'eussis ;
+  \item sortie de 3 parcours Playwright r\'eussis ;
+  \item build esbuild termin\'e sans erreur ;
+  \item checks Django en d\'eveloppement et production sans erreur ;
+  \item v\'erification de migrations sans changement manquant ;
+  \item neuf captures sous \evidence{figures/screenshots/} ;
+  \item analyse de couleur du mod\`ele sous \evidence{template\_analysis.txt}.
+\end{enumerate}
+
+\section*{Annexe F : D\'eclaration de non-responsabilit\'e}
+\addcontentsline{toc}{section}{Annexe F : D\'eclaration de non-responsabilit\'e}
+Cette revue est fond\'ee sur l'\'etat disponible du d\'ep\^ot et sur des tests automatis\'es. Elle ne garantit pas l'absence de vuln\'erabilit\'e et ne remplace ni une recette de production, ni un test d'intrusion ind\'ependant, ni un audit de certification.
+
+\section*{Annexe G : Confidentialit\'e}
+\addcontentsline{toc}{section}{Annexe G : Confidentialit\'e}
+Le rapport est destin\'e \`a l'\'evaluation acad\'emique. Les captures reposent sur des identifiants et donn\'ees synth\'etiques ; aucun mot de passe n'y appara\^it. Toute diffusion ult\'erieure doit respecter la politique de l'\'etablissement et les droits sur le code.
+
+\section*{Signatures}
+\addcontentsline{toc}{section}{Signatures}
+\begin{tabularx}{\textwidth}{X X X}
+\toprule
+Auteur du projet & Professeur / encadrant & Date\\
+\midrule
+\vspace{1.8cm} & & 15/10/2026\\
+\bottomrule
+\end{tabularx}

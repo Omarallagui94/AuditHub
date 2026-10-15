@@ -1,0 +1,37 @@
+\chapter{INFORMATIONS G\'EN\'ERALES}
+
+\section*{Pr\'esentation du projet}
+\addcontentsline{toc}{section}{Pr\'esentation du projet}
+AuditHub est une application web monoproduit destin\'ee \`a centraliser la documentation de missions de tests d'intrusion autoris\'es. Elle associe une interface React \`a une API JSON Django. Son r\^ole n'est pas d'ex\'ecuter Nmap, Metasploit, Burp Suite ou OWASP ZAP : les outils restent utilis\'es dans un laboratoire externe autoris\'e, puis leurs r\'esultats sont consign\'es sous forme textuelle dans l'application.
+
+Le besoin trait\'e est la dispersion habituelle des informations d'un audit technique : autorisation, p\'erim\`etre IP, intervenants, m\'ethode, preuve, s\'ev\'erit\'e, responsable de correction, \`ech\'eance et re-test. AuditHub rassemble ces objets dans une cha\^ine tra\c{c}able et applique des contr\^oles d'acc\`es c\^ot\'e serveur.
+
+\begin{table}[H]
+\centering
+\caption{Fiche d'identit\'e technique d'AuditHub}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{4.1cm}X}
+\toprule
+\rowcolor{AuditLight}Rubrique & Information v\'erifi\'ee\\
+\midrule
+Backend & Django 5.2.17, vues fonctionnelles, formulaires et ORM\\
+Frontend & React 19.3.0, bundle ES2020 produit par esbuild 0.28.2\\
+Persistance & SQLite, migration applicative jusqu'\`a \evidence{0002\_followup\_constraints}\\
+Authentification & Sessions Django, cookie HttpOnly, jeton CSRF, limitation des \`echecs\\
+R\^oles & Administrateur, Pentesteur, Auditeur\\
+Tests & 33 tests Django et 3 parcours Playwright valid\'es le 15 octobre 2026\\
+D\'eploiement document\'e & Waitress derri\`ere un reverse proxy TLS ; variables d'environnement obligatoires\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{1.3 Type d'audit}
+\addcontentsline{toc}{section}{1.3 Type d'audit}
+Le travail rapport\'e est une \textbf{revue technique et fonctionnelle du logiciel}, compl\'et\'ee par l'ex\'ecution de ses tests automatis\'es. Il ne s'agit pas d'un audit initial, de surveillance ou de renouvellement d'un SMSI au sens d'un organisme de certification. Cette qualification est essentielle : le d\'ep\^ot ne contient ni mandat de certification, ni D\'eclaration d'Applicabilit\'e organisationnelle, ni entretiens, ni preuves d'un environnement de production.
+
+\section*{1.4 Dates et dur\'ee de l'audit}
+\addcontentsline{toc}{section}{1.4 Dates et dur\'ee de l'audit}
+L'\'etat final analys\'e et les validations pr\'esent\'ees dans ce rapport datent du \textbf{15 octobre 2026}. La date de cr\'eation du rapport de tests historique du projet est le 1\textsuperscript{er} octobre 2026, puis il a \`et\'e actualis\'e. La dur\'ee humaine totale de conception et de d\'eveloppement n'est pas enregistr\'ee dans le d\'ep\^ot ; elle ne peut donc pas \^etre chiffr\'ee sans supposition.
+
+\section*{Probl\'ematique et besoins}
+\addcontentsline{toc}{section}{Probl\'ematique et besoins}
+La probl\'ematique peut \^etre formul\'ee ainsi : \emph{comment fournir une application simple, tra\c{c}able et contr\^ol\'ee pour documenter des tests de s\'ecurit\'e r\'ealis\'es hors plateforme, sans transformer le serveur web en outil offensif ?} La r\'eponse impl\'ement\'ee repose sur la s\'eparation entre ex\'ecution et documentation, un p\'erim\`etre explicite par mission, des r\^oles, la journalisation et un export JSON.

@@ -1,0 +1,20 @@
+AuditHub — environnement de validation du 2026-10-01
+Windows / Python 3.13.7 (interpréteur embarqué local)
+Django==5.2.17
+asgiref==3.12.1
+sqlparse==0.6.0
+tzdata==2026.4
+waitress==3.0.2
+
+Versions observées pendant la validation, pas un verrou avec empreintes.
+React==19.3.0
+react-dom==19.3.0
+esbuild==0.28.2
+@playwright/test==1.63.0
+Node.js v22.16.0 (outil local de validation)
+Tests backend : 26 réussis / 26, durée 6.250 s.
+Tests navigateur Chrome : 3 réussis / 3, durée 11.1 s.
+Build React JS/CSS : réussi.
+Contrôles Django standard et --deploy : aucun problème identifié.
+Migrations : appliquées, aucune modification de modèle en attente.
+pip check : aucune incompatibilité de dépendances.

@@ -1,0 +1,82 @@
+\chapter{NON-CONFORMIT\'ES D\'ETAILL\'EES}
+
+\section*{Position de la revue}
+\addcontentsline{toc}{section}{Position de la revue}
+Aucune non-conformit\'e ISO/IEC 27001 formelle n'est prononc\'ee. Une telle qualification exigerait un organisme audit\'e, un p\'erim\`etre SMSI, des crit\`eres contractuels, des preuves organisationnelles et une autorit\'e d'audit. La pr\'esente section recense plut\^ot les \textbf{\'ecarts techniques et limites de mise en production} objectivement observables.
+
+\section*{\'Ecart technique ET-01 --- persistance mono-instance}
+\addcontentsline{toc}{section}{ET-01 --- persistance mono-instance}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.8cm}X}
+\toprule
+Crit\`ere & Exploitation fiable en contexte multi-utilisateur\\
+Constat & La configuration utilise un fichier SQLite local avec un d\'elai d'attente de 20 secondes.\\
+Risque & Contention en \`ecriture, absence de haute disponibilit\'e et sauvegarde d\'ependante du syst\`eme de fichiers.\\
+Preuve & \evidence{config/settings.py}, variable \evidence{DATABASES}.\\
+Recommandation & Valider la concurrence attendue puis rendre la base configurable et migrer vers PostgreSQL si la charge ou la criticit\'e l'exigent.\\
+\bottomrule
+\end{tabularx}
+
+\section*{\'Ecart technique ET-02 --- journal non inviolable}
+\addcontentsline{toc}{section}{ET-02 --- journal non inviolable}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.8cm}X}
+\toprule
+Crit\`ere & Conservation ind\'ependante des traces\\
+Constat & Les \evidence{AuditEvent} sont stock\'es dans la m\^eme base que les donn\'ees m\'etier. Aucun endpoint ne les modifie, mais un administrateur syst\`eme ou de base peut les alt\'erer.\\
+Risque & Perte ou modification de la preuve de tra\c{c}abilit\'e.\\
+Recommandation & Exporter vers un stockage externe \`a r\'etention contr\^ol\'ee et superviser les ruptures de collecte.\\
+\bottomrule
+\end{tabularx}
+
+\section*{\'Ecart technique ET-03 --- identit\'e et r\'ecup\'eration de compte}
+\addcontentsline{toc}{section}{ET-03 --- identit\'e et r\'ecup\'eration de compte}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.8cm}X}
+\toprule
+Crit\`ere & Cycle de vie complet de l'identit\'e\\
+Constat & Les r\^oles et l'activation sont administrables et journalis\'es. Le changement de mot de passe reste une commande locale ; il n'existe ni r\'ecup\'eration autonome, ni MFA, ni SSO.\\
+Risque & D\'ependance \`a l'administrateur syst\`eme et protection d'identit\'e limit\'ee pour un contexte sensible.\\
+Recommandation & Choisir un fournisseur d'identit\'e selon le contexte, imposer MFA et d\'efinir un parcours de r\'ecup\'eration audit\'e.\\
+\bottomrule
+\end{tabularx}
+
+\section*{\'Ecart technique ET-04 --- preuves uniquement textuelles}
+\addcontentsline{toc}{section}{ET-04 --- preuves uniquement textuelles}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.8cm}X}
+\toprule
+Crit\`ere & Conservation compl\`ete des r\'esultats techniques\\
+Constat & La preuve est un texte limit\'e \`a 20 000 caract\`eres. L'application ne re\c{c}oit pas les rapports natifs, captures ou pi\`eces jointes.\\
+Risque & D\'etails techniques incomplets et d\'ependance \`a un r\'ef\'erentiel externe pour les originaux.\\
+Recommandation & Si le besoin est valid\'e, ajouter un stockage de fichiers isol\'e, antivirus, quotas, empreintes externes, contr\^oles d'acc\`es et r\'etention.\\
+\bottomrule
+\end{tabularx}
+
+\section*{\'Ecart technique ET-05 --- assurance de livraison partielle}
+\addcontentsline{toc}{section}{ET-05 --- assurance de livraison partielle}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.8cm}X}
+\toprule
+Crit\`ere & Cha\^ine de livraison s\'ecuris\'ee\\
+Constat & Une CI ex\'ecute build et tests ; les versions Python et npm sont verrouill\'ees. Aucun SBOM, SAST/SCA, signature d'artefact ou scan DAST n'est fourni.\\
+Risque & Vuln\'erabilit\'es de d\'ependances ou d'impl\'ementation non d\'etect\'ees automatiquement.\\
+Recommandation & Ajouter analyse de d\'ependances, SAST, SBOM, contr\^ole des secrets et signature des livrables.\\
+\bottomrule
+\end{tabularx}
+
+\section*{\'Ecart technique ET-06 --- exploitation \`a finaliser}
+\addcontentsline{toc}{section}{ET-06 --- exploitation \`a finaliser}
+Le d\'ep\^ot documente Waitress et le proxy, mais ne fournit pas le proxy TLS, les certificats, un service syst\`eme, une supervision, des alertes ni une preuve de restauration. Ces \`el\'ements d\'ependent de l'environnement cible et doivent \^etre valid\'es avant exposition r\'eseau.
+
+\begin{table}[H]
+\centering
+\caption{Priorisation propos\'ee des limites}
+\begin{tabularx}{\textwidth}{p{2cm}X p{2.6cm}p{2.6cm}}
+\toprule
+\rowcolor{AuditLight}ID & Limite & Priorit\'e & Horizon\\
+\midrule
+ET-01 & base et concurrence & Haute si production partag\'ee & avant production\\
+ET-02 & journal externe & Haute pour valeur probatoire & avant production\\
+ET-03 & MFA/SSO/r\'ecup\'eration & Moyenne \`a haute & selon risques\\
+ET-04 & pi\`eces jointes & Moyenne & selon besoin\\
+ET-05 & assurance CI & Moyenne & prochaine it\'eration\\
+ET-06 & exploitation & Haute & avant production\\
+\bottomrule
+\end{tabularx}
+\end{table}
